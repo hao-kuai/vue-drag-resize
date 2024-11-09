@@ -1,7 +1,29 @@
+/**
+ * vue-drag-resize 组件样式
+ * 
+ * 样式结构：
+ * 1. 主容器样式 (.vdr)
+ * 2. 激活状态样式 (.vdr.active)
+ * 3. 控制点样式 (.vdr-stick)
+ * 4. 内容容器样式 (.content-container)
+ */
+
+/* 主容器基础样式
+ * position: absolute - 使容器可以在父元素内自由定位
+ * box-sizing: border-box - 确保边框不会增加元素的实际尺寸
+ */
 .vdr {
     position: absolute;
     box-sizing: border-box;
 }
+
+/* 激活状态虚线边框效果
+ * :before 伪元素用于创建边框效果
+ * content: '' - 创建空内容的伪元素
+ * width/height: 100% - 覆盖整个容器
+ * outline: 1px dashed - 创建虚线边框效果，比 border 更适合此场景
+ * 因为 outline 不会影响元素尺寸和定位
+ */
 .vdr.active:before{
     content: '';
     width: 100%;
@@ -12,6 +34,13 @@
     box-sizing: border-box;
     outline: 1px dashed #d6d6d6;
 }
+
+/* 控制点通用样式
+ * box-sizing: border-box - 包含边框在内的盒模型
+ * position: absolute - 相对于容器定位
+ * font-size: 1px - 最小化文本影响
+ * background/border/box-shadow - 视觉效果
+ */
 .vdr-stick {
     box-sizing: border-box;
     position: absolute;
@@ -20,26 +49,50 @@
     border: 1px solid #6c6c6c;
     box-shadow: 0 0 2px #bbb;
 }
+
+/* 非激活状态控制点处理
+ * display: none - 隐藏所有控制点
+ * 提升非激活状态的视觉清晰度
+ */
 .inactive .vdr-stick {
     display: none;
 }
+
+/* 控制点方向特定样式
+ * cursor 属性用于指示可调整的方向
+ * nwse-resize - 左上-右下对角线调整
+ * nesw-resize - 右上-左下对角线调整
+ * ns-resize - 上下垂直调整
+ * ew-resize - 左右水平调整
+ */
 .vdr-stick-tl, .vdr-stick-br {
-    cursor: nwse-resize;
+    cursor: nwse-resize;  /* 左上-右下调整 */
 }
 .vdr-stick-tm, .vdr-stick-bm {
     left: 50%;
-    cursor: ns-resize;
+    cursor: ns-resize;    /* 上下调整 */
 }
 .vdr-stick-tr, .vdr-stick-bl {
-    cursor: nesw-resize;
+    cursor: nesw-resize;  /* 右上-左下调整 */
 }
 .vdr-stick-ml, .vdr-stick-mr {
     top: 50%;
-    cursor: ew-resize;
+    cursor: ew-resize;    /* 左右调整 */
 }
+
+/* 禁用调整大小时的控制点样式
+ * 当 isResizable 为 false 时应用
+ * 完全隐藏控制点，禁用调整大小功能
+ */
 .vdr-stick.not-resizable{
     display: none;
 }
+
+/* 内容容器样式
+ * display: block - 块级元素
+ * position: relative - 为内部元素提供定位上下文
+ * 确保内容正确显示和定位
+ */
 .content-container{
     display: block;
     position: relative;
