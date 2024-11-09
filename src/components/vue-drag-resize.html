@@ -1,17 +1,64 @@
+<!-- 主容器 div
+属性说明：
+- class="vdr": 提供基础定位和盒模型样式
+- :style="positionStyle": 动态绑定位置和层级样式
+- :class: 动态类名绑定
+  - active/inactive: 控制组件激活状态
+  - contentClass: 用户自定义类名
+事件绑定：
+- @mousedown: 处理鼠标按下事件，开始拖拽
+- @touchstart: 处理触摸开始事件，支持移动设备
+- @touchend: 处理触摸结束事件
+-->
 <div class="vdr" :style="positionStyle"
      :class="`${(active || isActive) ? 'active' : 'inactive'} ${contentClass ? contentClass: ''}`"
-     @mousedown="bodyDown($event)"
-     @touchstart="bodyDown($event)"
-     @touchend="up($event)">
+     @mousedown="bodyDown($event)" @touchstart="bodyDown($event)" @touchend="up($event)">
+
+    <!-- 内容容器
+    属性说明：
+    - :style="sizeStyle": 控制容器尺寸
+    - class="content-container": 设置容器布局属性
+    - ref="container": 提供DOM引用，用于获取实际尺寸
+    用途：
+    - 包装用户自定义内容
+    - 维护内容区域的尺寸
+    - 提供插槽以支持自定义内容
+    -->
     <div :style="sizeStyle" class="content-container" ref="container">
         <slot></slot>
     </div>
-    <div
-            v-for="stick in sticks"
-            class="vdr-stick"
-            :class="['vdr-stick-' + stick, isResizable ? '' : 'not-resizable']"
-            @mousedown.stop.prevent="stickDown(stick, $event)"
-            @touchstart.stop.prevent="stickDown(stick, $event)"
-            :style="vdrStick(stick)">
+
+    <!-- 调整大小的控制点 
+    属性说明：
+    - v-for="stick in sticks": 循环创建八个控制点
+    - class="vdr-stick": 控制点基础样式
+    - :class: 动态样式
+      - vdr-stick-{position}: 位置特定样式
+      - not-resizable: 禁用状态样式
+    - :style="vdrStick(stick)": 计算控制点位置和尺寸
+    
+    控制点位置对应关系：
+    - tl: top-left (左上角，支持左上方向调整)
+    - tm: top-middle (上中，支持向上调整)
+    - tr: top-right (右上角，支持右上方向调整)
+    - mr: middle-right (右中，支持向右调整)
+    - br: bottom-right (右下角，支持右下方向调整)
+    - bm: bottom-middle (下中，支持向下调整)
+    - bl: bottom-left (左下角，支持左下方向调整)
+    - ml: middle-left (左中，支持向左调整)
+    
+    事件处理：
+    - @mousedown.stop.prevent: 鼠标按下事件，阻止冒泡和默认行为
+    - @touchstart.stop.prevent: 触摸开始事件，支持移动设备
+    
+    功能说明：
+    - 提供八个方向的大小调整功能
+    - 支持鼠标和触摸操作
+    - 可以通过 isResizable 属性控制是否可调整大小
+    - 每个控制点都有特定的光标样式，提示可调整的方向
+    -->
+    <div v-for="stick in sticks" class="vdr-stick" :class="['vdr-stick-' + stick, isResizable ? '' : 'not-resizable']"
+         @mousedown.stop.prevent="stickDown(stick, $event)" @touchstart.stop.prevent="stickDown(stick, $event)"
+         :style="vdrStick(stick)">
     </div>
 </div>
